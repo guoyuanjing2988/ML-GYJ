@@ -56,7 +56,7 @@ class TestModelTraining(unittest.TestCase):
         seed=7
         numpy.random.seed(seed)
         estimator=KerasRegressor(build_fn=create_baseline,nb_epoch=10,batch_size=10,verbose=0)
-        kfold=StratifiedKFold(y=outp,n_folds=2,shuffle=True,random_state=seed)
+        kfold=StratifiedKFold(y=outp,n_folds=2,shuffle=False,random_state=seed)
         results=cross_val_score(estimator,inp,outp,cv=kfold)
         print(results.mean()*100)
         self.assertIsNotNone(results)
