@@ -8,6 +8,7 @@ from jobs.traininginput import get_job_traininginput
 class TestTrain(unittest.TestCase):
 
     def test_get_training_input(self):
+        import numpy
         f=open('users_information.pickle','rb')
         users=pickle.load(f)
         f.close()
@@ -27,10 +28,16 @@ class TestTrain(unittest.TestCase):
                     if len(inp)!=0:
                         if len(user_vector)+len(job_vector)==len(inp[0]):
                             inp.append(user_vector+job_vector)
-                            outp.append((5-interactions[i][1][j][1])/4.0)
+                            if interactions[i][1][j][1]==4:
+                                outp.append(0)
+                            else:
+                                outp.append((4-interactions[i][1][j][1]))
                     else:
                         inp.append(user_vector + job_vector)
-                        outp.append((5 - interactions[i][1][j][1]) / 4.0)
+                        if interactions[i][1][j][1] == 4:
+                            outp.append(0)
+                        else:
+                            outp.append((4 - interactions[i][1][j][1]))
         l=len(inp[0])
         sum=0
         for i in range(len(inp)):
@@ -40,15 +47,21 @@ class TestTrain(unittest.TestCase):
         print(inp[4352])
         print(len(inp),sum)
         print(len(outp))
+        count=[0]*4
+        for i in range(len(outp)):
+            count[outp[i]]+=1
+        print(count)
         from keras.models import Sequential
         from keras.layers import Dense, Dropout
         from keras.wrappers.scikit_learn import KerasClassifier
         from cross_validation_edited import cross_val_score
         from sklearn.cross_validation import StratifiedKFold
-        import numpy
+        print(numpy.asarray(inp))
+        #print(outp)
         def create_baseline():
             model = Sequential()
-            model.add(Dense(100, input_dim=len(inp[0]), init='uniform', activation='relu'))
+            #model.add(Dense(100, input_dim=[len(inp),len(inp[0])], init='uniform', activation='relu'))
+            model.add(Dense(30, input_dim=len(inp[0]), init='uniform', activation='relu'))
             #
             # model.add(Dense(100, init='uniform', activation='relu'))
             # model.add(Dense(50, init='uniform', activation='relu'))
@@ -59,12 +72,11 @@ class TestTrain(unittest.TestCase):
             model.add(Dense(1, init='uniform', activation='sigmoid'))
             model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
             return model
-
         seed = 7
         numpy.random.seed(seed)
         estimator = KerasClassifier(build_fn=create_baseline, nb_epoch=20, batch_size=5, verbose=0)
         kfold = StratifiedKFold(y=outp, n_folds=2, shuffle=True, random_state=seed)
-        results = cross_val_score(estimator, inp, numpy.asarray(outp), cv=kfold)
+        results = cross_val_score(estimator, numpy.asarray(inp), numpy.asarray(outp), cv=kfold)
         print("Results: %.2f%% (%.2f%%)" % (results.mean() * 100, results.std() * 100))
         self.assertIsNotNone(results)
 
