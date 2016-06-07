@@ -48,7 +48,7 @@ def getwholelist(data,k):
     for i in range(len(data)):
         s = data[i]
         if s!=0:
-            if type(s)==numpy.int64:
+            if type(s)!=str:
                 s=[s]
             else:
                 s=s.split()
@@ -63,6 +63,7 @@ def getwholelist(data,k):
     return a
 
 def get_users_vector(data):
+    import copy
     print('Start Users')
     columns = data.columns.tolist()
     isnull=data.isnull()
@@ -86,7 +87,7 @@ def get_users_vector(data):
     whole=[[]]*m
     for i in range(m-1):
         print(i)
-        whole[i+1]=getwholelist(users_temp[i+1],i+1)
+        whole[i+1]=copy.deepcopy(getwholelist([row[i+1] for row in users_temp],i+1))
     print(whole[2])
     for i in range(n):
         temp = []

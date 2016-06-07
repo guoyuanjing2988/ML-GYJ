@@ -8,6 +8,21 @@ def get_date_from_excel(date):
     a=[int(s[1]),int(s[2]),int(s[0])]
     return a
 
+def get_team_names(data):
+    n,m=data.shape
+    teams=[]
+    for i in range(n):
+        s='Team'
+        name=data.iloc[i][s]
+        f=True
+        for j in range(len(teams)):
+            if teams[j]==name:
+                f=False
+                break
+        if f==True:
+            teams.append(name)
+    return teams
+
 
 def get_all_names(data):
     isnull=data.isnull()
@@ -109,10 +124,20 @@ def get_last_ten_score(data,team,n):
                 break
     return score
 
-def get_vector(data,team,players,date,n,all_name):
+def get_team_code(team,all_team):
+    a=[]
+    for i in range(len(all_team)):
+        if all_team[i]==team:
+            a.append(1)
+        else:
+            a.append(0)
+    return a
+
+def get_vector(data,team,players,date,n,all_name,all_team,type):
     vector=get_name_vector(data,players,all_name)
     if get_wins(data,team,n)==-1:
         return None
+    vector=vector+get_team_code(team,all_team)
     vector.append(get_wins(data,team,n))
     vector.append(last_game(data,team,date,n))
     vector.append(games_in_last_seven_days(data,team,date,n))
@@ -121,5 +146,6 @@ def get_vector(data,team,players,date,n,all_name):
     score=get_last_ten_score(data,team,n)
     for i in range(len(score)):
         vector.append(score[i])
+    vector.append(type)
     return vector
 
