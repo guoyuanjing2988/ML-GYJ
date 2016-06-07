@@ -26,7 +26,7 @@ def get_jobs_vector(data):
     for i in range(m - 1):
         if (i!=6) and (i!=7):
             print(i)
-            whole[i + 1] = getwholelist(jobs_temp[i + 1], i + 1)
+            whole[i + 1] = getwholelist([row[i+1] for row in jobs_temp], i + 1)
     print('Step 1')
     print(whole[2])
     for i in range(len(jobs_temp)):
