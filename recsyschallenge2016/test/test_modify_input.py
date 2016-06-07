@@ -11,7 +11,7 @@ data_dir=os.path.join(os.pardir,os.pardir,os.pardir,os.pardir,os.pardir,'media',
 print(data_dir)
 class TestInput(unittest.TestCase):
 
-    '''def test_user_input(self):
+    def test_user_input(self):
         users_data=pandas.read_csv(os.path.join(data_dir,'users.csv'),sep='	')
         print(type(users_data))
         print(users_data.columns.tolist())
@@ -26,15 +26,15 @@ class TestInput(unittest.TestCase):
         jobs_modified = get_jobs_vector(jobs_data)
         with open('jobs_information.pickle', 'wb') as f:
             pickle.dump(jobs_modified, f)
-        self.assertIsNotNone(jobs_modified)'''
+        self.assertIsNotNone(jobs_modified)
 
-    def test_interactions_input(self):
+    '''def test_interactions_input(self):
         interactions_data = pandas.read_csv(os.path.join(data_dir, 'interactions.csv'), sep='	')
         print(interactions_data.shape)
         interactions_modified=get_preprocess(interactions_data)
         with open('interactions_information.pickle', 'wb') as f:
             pickle.dump(interactions_modified, f)
-        self.assertIsNotNone(interactions_modified)
+        self.assertIsNotNone(interactions_modified)'''
 
 
 if __name__ == '__main__':

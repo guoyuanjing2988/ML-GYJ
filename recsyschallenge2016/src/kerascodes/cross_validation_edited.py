@@ -1420,6 +1420,7 @@ def cross_val_score(estimator, X, y=None, scoring=None, cv=None, n_jobs=1,
         Array of scores of the estimator for each run of the cross validation.
     """
     X, y = indexable(X, y)
+    print(hasattr(y,'shape'))
 
     cv = check_cv(cv, X, y, classifier=is_classifier(estimator))
     scorer = check_scoring(estimator, scoring=scoring)
@@ -1528,6 +1529,7 @@ def _fit_and_score(estimator, X, y, scorer, train, test, verbose,
         if y_train is None:
             estimator.fit(X_train, **fit_params)
         else:
+            print(hasattr(y_train,'shape'))
             estimator.fit(X_train, y_train, **fit_params)
 
     except Exception as e:
@@ -1573,7 +1575,7 @@ def _fit_and_score(estimator, X, y, scorer, train, test, verbose,
         print("[CV] %s %s" % ((64 - len(end_msg)) * '.', end_msg))
     ret=[]
     #ret = [train_score] if return_train_score else []
-    ret.extend([test_score, test_score1,test_score2,train_score,_num_samples(X_test), scoring_time])
+    ret.extend([test_score,train_score,_num_samples(X_test), scoring_time])
     if return_parameters:
         ret.append(parameters)
     print(ret)
