@@ -1,3 +1,4 @@
+import numpy
 def get_country_code(s):
     country_names = ['de','at','ch','non_dach']
     for i in range(len(country_names)):
@@ -24,6 +25,42 @@ def get_maxn(a,k):
                 max_len=len(s)
     return max_len
 
+def returnbyte(whole,inform):
+    if type(inform)==str:
+        s=inform.split(',')
+    else:
+        s=[inform]
+    a=[]
+    for i in range(len(whole)):
+        f=False
+        for j in range(len(s)):
+            if s[j]==whole[i]:
+                f=True
+                break
+        if f==True:
+            a.append(1)
+        else:
+            a.append(0)
+    return a
+
+def getwholelist(data,k):
+    a = []
+    for i in range(len(data)):
+        s = data[i]
+        if s!=0:
+            if type(s)==numpy.int64:
+                s=[s]
+            else:
+                s=s.split()
+            for j in range(len(s)):
+                ff = True
+                for k in range(len(a)):
+                    if a[k] == s[j]:
+                        ff = False
+                        break
+                if ff == True:
+                    a.append(s[j])
+    return a
 
 def get_users_vector(data):
     print('Start Users')
@@ -35,32 +72,30 @@ def get_users_vector(data):
         temp = []
         for j in range(m):
             if isnull.iloc[i][columns[j]]!=True:
-                temp.append(data.iloc[i][columns[j]])
+                if data.iloc[i][columns[j]] == 'NULL':
+                    temp.append(0)
+                elif j!=5:
+                    temp.append(data.iloc[i][columns[j]])
+                else:
+                    temp.append(get_country_code(data.iloc[i][columns[j]]))
             else:
                 temp.append(0)
         users_temp.append(temp)
     print('Step 1')
-    max_len_1 = get_maxn(users_temp,1)
-    max_len_11= get_maxn(users_temp,11)
     users_modified = []
+    whole=[[]]*m
+    for i in range(m-1):
+        print(i)
+        whole[i+1]=getwholelist(users_temp[i+1],i+1)
+    print(whole[2])
     for i in range(n):
         temp = []
         for j in range(m):
-            if users_temp[i][j]==0:
-                temp.append(0)
-            elif j == 1:
-                temptemp=cancel_comma(users_temp[i][j],max_len_1)
-                temp=temp+temptemp
-            elif j == 5:
-                temp.append(get_country_code(users_temp[i][5]))
-            elif j==11:
-                temptemp = cancel_comma(users_temp[i][j], max_len_11)
-                temp=temp+temptemp
-            elif users_temp[i][j]=='NULL':
-                temp.append(0)
-            else:
+            if (j==0):
                 temp.append(int(users_temp[i][j]))
+            else:
+                temp=temp+returnbyte(whole[j],users_temp[i][j])
+
         users_modified.append(temp)
     print('Step 2')
     return users_modified
-
