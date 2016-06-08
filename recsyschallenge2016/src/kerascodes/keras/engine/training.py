@@ -1107,6 +1107,7 @@ class Model(Container):
         x = standardize_input_data(x, self.input_names,
                                    self.internal_input_shapes,
                                    check_batch_dim=False)
+        print(x)
         if self.stateful:
             if x[0].shape[0] > batch_size and x[0].shape[0] % batch_size != 0:
                 raise Exception('In a stateful network, '

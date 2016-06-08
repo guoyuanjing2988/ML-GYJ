@@ -1550,6 +1550,9 @@ def _fit_and_score(estimator, X, y, scorer, train, test, verbose,
         test_score = _score(estimator, X_test, y_test, scorer)
         #if return_train_score:
         train_score = _score(estimator, X_train, y_train, scorer)
+        for i in range(len(X_test)):
+            print(X_test[i],y_test[i])
+            print(estimator.predict(X_test[i]),y_test[i])
 
     scoring_time = time.time() - start_time
 
