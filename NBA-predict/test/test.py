@@ -37,7 +37,7 @@ class TestModelTraining(unittest.TestCase):
                 for j in range(len(vector2)):
                     vector.append(vector2[j])
                 inp.append(vector)
-                outp.append(int(data.iloc[i*2]['Score'])-int(data.iloc[i*2+1]['Score']))
+                outp.append((int(data.iloc[i*2]['Score'])-int(data.iloc[i*2+1]['Score']))/100.0)
                 #print(vector)
         print('Finished Vector')
         return inp,outp
@@ -67,7 +67,7 @@ class TestModelTraining(unittest.TestCase):
         model = Sequential()
         model.add(Dense(100, input_dim=len(inp[0]), init='uniform', activation='relu'))
         model.add(Dense(20, init='uniform', activation='relu'))
-        model.add(Dense(1, init='uniform', activation='relu'))
+        model.add(Dense(1, init='uniform', activation='sigmoid'))
         model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         model.fit(inp,outp,shuffle=False)
         print(inp[1034],outp[1034])
@@ -75,7 +75,7 @@ class TestModelTraining(unittest.TestCase):
         #kfold=StratifiedKFold(y=numpy.asarray(outp),n_folds=2,shuffle=False,random_state=None)
         #results=cross_val_score(estimator,numpy.asarray(inp),numpy.asarray(outp),cv=kfold)
         #print(results.mean()*100)
-        self.assertIsNotNone(numpy.asarray(model.predict([inp[780]])))
+        self.assertIsNotNone(model.predict(numpy.asarray([inp[780]])))
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestModelTraining)
