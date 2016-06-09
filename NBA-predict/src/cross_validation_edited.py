@@ -1420,7 +1420,7 @@ def cross_val_score(estimator, X, y=None, scoring=None, cv=None, n_jobs=1,
         Array of scores of the estimator for each run of the cross validation.
     """
     X, y = indexable(X, y)
-
+    print(X)
     cv = check_cv(cv, X, y, classifier=is_classifier(estimator))
     scorer = check_scoring(estimator, scoring=scoring)
     # We clone the estimator to make sure that all the folds are
@@ -1550,9 +1550,11 @@ def _fit_and_score(estimator, X, y, scorer, train, test, verbose,
         test_score = _score(estimator, X_test, y_test, scorer)
         #if return_train_score:
         train_score = _score(estimator, X_train, y_train, scorer)
+        #print(X_test)
+        #print(y_test)
         for i in range(len(X_test)):
-            print(X_test[i],y_test[i])
-            print(estimator.predict(X_test[i]),y_test[i])
+            #print(X_test[i],y_test[i])
+            print(estimator.predict(np.asarray([X_test[i]])),y_test[i])
 
     scoring_time = time.time() - start_time
 

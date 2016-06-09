@@ -37,7 +37,7 @@ class TestModelTraining(unittest.TestCase):
                 for j in range(len(vector2)):
                     vector.append(vector2[j])
                 inp.append(vector)
-                outp.append(int(data.iloc[i*2]['Score'])-int(data.iloc[i*2+1]['Score']))
+                outp.append((int(data.iloc[i*2]['Score'])-int(data.iloc[i*2+1]['Score']))/200.0+0.5)
                 #print(vector)
         print('Finished Vector')
         return inp,outp
@@ -49,21 +49,21 @@ class TestModelTraining(unittest.TestCase):
         from keras.wrappers.scikit_learn import KerasClassifier
         from keras.wrappers.scikit_learn import KerasRegressor
         from cross_validation_edited import cross_val_score
-        from sklearn.cross_validation import StratifiedKFold
+        from sklearn.cross_validation import KFold
         import numpy
-        '''def create_baseline():
+        def create_baseline():
             model=Sequential()
-            model.add(Dense(100,input_dim=len(inp[0]),init='uniform',activation='relu'))
+            model.add(Dense(len(inp[0]),input_dim=len(inp[0]),init='uniform',activation='relu'))
             model.add(Dense(20,init='uniform',activation='relu'))
             model.add(Dense(1,init='uniform',activation='sigmoid'))
             model.compile(loss='mean_squared_error',optimizer='adam',metrics=['accuracy'])
             return model
         seed=7
         numpy.random.seed(seed)
-        estimator=KerasRegressor(build_fn=create_baseline,nb_epoch=10,batch_size=10,verbose=0)
-        estimator.fit(inp,outp)
+        estimator=KerasRegressor(build_fn=create_baseline,nb_epoch=2,batch_size=10,verbose=0)
+        '''estimator.fit(inp,outp)
         print(inp[780],outp[780])
-        print(estimator.predict(inp[780]))'''
+        print(estimator.predict(inp[780]))
         model = Sequential()
         model.add(Dense(100, input_dim=len(inp[0]), init='uniform', activation='relu'))
         model.add(Dense(20, init='uniform', activation='relu'))
@@ -71,11 +71,10 @@ class TestModelTraining(unittest.TestCase):
         model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         model.fit(inp,outp,shuffle=False)
         print(inp[1034],outp[1034])
-        print(model.predict(numpy.asarray([inp[1034]]),batch_size=1))
-        #kfold=StratifiedKFold(y=numpy.asarray(outp),n_folds=2,shuffle=False,random_state=None)
-        #results=cross_val_score(estimator,numpy.asarray(inp),numpy.asarray(outp),cv=kfold)
-        #print(results.mean()*100)
-        self.assertIsNotNone(numpy.asarray(model.predict([inp[780]])))
+        print(model.predict(numpy.asarray([inp[1034]]),batch_size=1))'''
+        kfold=KFold(n=len(outp),n_folds=2,shuffle=False,random_state=None)
+        results=cross_val_score(estimator,numpy.asarray(inp),numpy.asarray(outp),cv=kfold)
+        self.assertIsNotNone(results)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestModelTraining)
