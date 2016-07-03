@@ -24,3 +24,22 @@ def getTeamsPlayingAtOneDay(game_date):
         teams_playing[-1]['home_team']=website_content[home_team_loc+39:home_team_loc+42]
         prev_loc = website_content.find('<div id="nbaGL00215', home_team_loc) + 1
     return teams_playing
+
+def getURLForOneMatchData(game_date,away_team,home_team):
+    return 'http://www.nba.com/games/'+game_date+'/'+away_team+home_team+'/gameinfo.html'
+
+def _getScoreFromPosition(website_content,location):
+    score_end_location = website_content.find('<', location + 1)
+    if website_content[location+20]!='"':
+        return int(website_content[location+25:score_end_location])
+    else:
+        return int(website_content[location+22:score_end_location])
+
+def getMatchScoreFromURL(match_url):
+    website_content = readContentFromURL(match_url)
+    away_team_loc=website_content.find('<h2 class="teamAway')
+    score={}
+    score['away_team']=_getScoreFromPosition(website_content,away_team_loc)
+    home_team_loc=website_content.find('<h2 class="teamHome')
+    score['home_team']=_getScoreFromPosition(website_content,home_team_loc)
+    return score
