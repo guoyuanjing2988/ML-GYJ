@@ -1,5 +1,5 @@
 import unittest
-from nba_crawler.NBADataCrawler import getNumberOfGamesAtOneDay,getTeamsPlayingAtOneDay,getURLForOneMatchData,getMatchScoreFromURL
+from nba_crawler.NBADataCrawler import getNumberOfGamesAtOneDay,getTeamsPlayingAtOneDay,getURLForOneMatchData,getMatchScoreFromURL,getHealthyPlayersFromURL
 
 class TestNBADataCrawler(unittest.TestCase):
     def testGetNumberOfGamesAtOneDay(self):
@@ -25,3 +25,9 @@ class TestNBADataCrawler(unittest.TestCase):
         self.assertEqual(result,{'away_team':103,'home_team':83})
         result=getMatchScoreFromURL('http://www.nba.com/games/20160211/WASMIL/gameinfo.html')
         self.assertEqual(result,{'away_team':92,'home_team':99})
+
+    def testGetHealthyPlayersFromURL(self):
+        result = getHealthyPlayersFromURL('http://www.nba.com/games/20151203/SASMEM/gameinfo.html')
+        self.assertEqual(result, {'away_team': ['kawhi_leonard', 'lamarcus_aldridge', 'tim_duncan', 'daniel_green', 'tony_parker', 'emanuel_ginobili', 'boris_diaw', 'kyle_anderson', 'patrick_mills', 'david_west', 'jonathon_simmons', 'matt_bonner', 'boban_marjanovic'], 'home_team': ['jeff_green', 'zach_randolph', 'marc_gasol', 'tony_allen', 'mike_conley', 'matt_barnes', 'courtney_lee', 'jamychal_green', 'mario_chalmers', 'vince_carter', 'james_ennis', 'russ_smith', 'brandan_wright']})
+        result = getHealthyPlayersFromURL('http://www.nba.com/games/20160211/WASMIL/gameinfo.html')
+        self.assertEqual(result, {'away_team': ['otto_porter', 'jared_dudley', 'marcin_gortat', 'bradley_beal', 'john_wall', 'nene', 'garrett_temple', 'ramon_sessions', 'kelly_oubre', 'drew_gooden', 'dejuan_blair', 'jarell_eddie'], 'home_team': ['giannis_antetokounmpo', 'jabari_parker', 'miles_plumlee', 'khris_middleton', 'oj_mayo', 'greg_monroe', 'michael_carter-williams', 'jerryd_bayless', 'rashad_vaughn', 'chris_copeland', 'tyler_ennis', 'john_henson', 'johnny_obryant']})
