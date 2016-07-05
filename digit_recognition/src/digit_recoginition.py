@@ -40,7 +40,7 @@ def predict(digit_image):
     cnn_model.load_weights(os.path.join('..','model','digit_recognition_weights.h5'))
     sgd = SGD(lr=0.0001)
     cnn_model.compile(loss='sparse_categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    result=cnn_model.predict(numpy.asarray(digit_image)).tolist()[0]
+    result=cnn_model.predict(numpy.asarray([digit_image])).tolist()[0]
     maxx=0
     maxi=-1
     for i in range(len(result)):
