@@ -1,8 +1,10 @@
 from util.http_util import readContentFromURL
 import datetime
 import pickle
+import logging
 nba_gameline_url='http://www.nba.com/gameline/'
-
+logging.basicConfig(level=logging.INFO , format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger=logging.getLogger('nba_crawler')
 
 def getNumberOfGamesAtOneDay(game_date):
     url_at_game_date=nba_gameline_url+game_date+'/'
@@ -139,8 +141,26 @@ def refreshNBADataPickle():
     matches=getAllMatches(datetime.date(year=2015,month=10,day=27),datetime.date(year=2016,month=6,day=19))
     pickle.dump(matches,open('nba_matches.pickle','wb'))
 
+def refreshAllPlayerNames():
+    matches=pickle.load(open('nba_matches.pickle','rb'))
+    player_names=[]
+    for match in matches:
+        for player in match['home_team_players']:
+            try:
+                player_names.index(player)
+            except:
+                player_names.append(player)
+        for player in match['away_team_players']:
+            try:
+                player_names.index(player)
+            except:
+                player_names.append(player)
+    logger.info('player number:'+str(len(player_names)))
+    pickle.dump(player_names,open('player_names.pickle','wb'))
+
 
 if __name__=='__main__':
     refreshNBADataPickle()
+    refreshAllPlayerNames()
 
 
