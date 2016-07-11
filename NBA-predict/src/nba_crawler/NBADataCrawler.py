@@ -2,6 +2,7 @@ from util.http_util import readContentFromURL
 import datetime
 import pickle
 import logging
+import os
 nba_gameline_url='http://www.nba.com/gameline/'
 logging.basicConfig(level=logging.INFO , format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger=logging.getLogger('nba_crawler')
@@ -137,12 +138,23 @@ def getAllMatches(start_date,end_date):
                 del(matches[-1])
     return matches
 
+
 def refreshNBADataPickle():
     matches=getAllMatches(datetime.date(year=2015,month=10,day=27),datetime.date(year=2016,month=6,day=19))
-    pickle.dump(matches,open('nba_matches.pickle','wb'))
+    pickle.dump(matches,open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','nba_matches.pickle'),'wb'))
+
+def getAllTeamNames():
+    matches = pickle.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','nba_matches.pickle'), 'rb'))
+    team_names=[]
+    for match in matches:
+        try:
+            team_names.index(match['home_team'])
+        except:
+            team_names.append(match['home_team'])
+    return team_names
 
 def refreshAllPlayerNames():
-    matches=pickle.load(open('nba_matches.pickle','rb'))
+    matches=pickle.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','nba_matches.pickle'),'rb'))
     player_names=[]
     for match in matches:
         for player in match['home_team_players']:
@@ -156,8 +168,7 @@ def refreshAllPlayerNames():
             except:
                 player_names.append(player)
     logger.info('player number:'+str(len(player_names)))
-    pickle.dump(player_names,open('player_names.pickle','wb'))
-
+    pickle.dump(player_names,open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','player_names.pickle'),'wb'))
 
 if __name__=='__main__':
     refreshNBADataPickle()
