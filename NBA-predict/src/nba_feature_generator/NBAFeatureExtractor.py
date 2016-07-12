@@ -25,8 +25,9 @@ def generateVectorForOneTeamName(team_name):
             vector.append(0)
     return vector
 
-def generateVectorForOneMatch(matches,i):
-    match = matches[i]
+def generateVectorForOneMatch(matches=[],i=0,match=None):
+    if match==None:
+        match = matches[i]
     vector=generateVectorForOneTeamName(match['home_team'])+generateVectorForOneTeamName(match['away_team'])+generateVectorForPlayersInOneTeam(match['home_team_players'])+generateVectorForPlayersInOneTeam(match['away_team_players'])
     return vector
 
