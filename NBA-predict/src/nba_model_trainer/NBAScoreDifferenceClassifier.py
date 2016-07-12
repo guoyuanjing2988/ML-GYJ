@@ -42,10 +42,13 @@ def build():
     print(y_test[:20])
 
 def predict(X):
+    if type(X[0])!=list:
+        X=[X]
     model=model_from_json(open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','model_score_difference_model.pickle')).read())
     model.load_weights(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','model_score_difference_weights.h5'))
-    sgd = SGD(lr=1)
+    sgd = SGD(lr=0.1)
     model.compile(loss='sparse_categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    return model.predict(X).tolist()
+    return model.predict(numpy.asarray(X)).tolist()
 
-build()
+if __name__=='__main__':
+    build()
