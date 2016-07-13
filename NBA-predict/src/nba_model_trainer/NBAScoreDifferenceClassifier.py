@@ -11,7 +11,8 @@ min_diff=-1000
 max_class=0
 
 def _modifyOutput(output_vector):
-    global max_class,min_diff
+    global max_class
+    global min_diff
     diff=[output_vector[i][0]-output_vector[i][1] for i in range(len(output_vector))]
     min_diff=min(diff)
     diff=[element-min_diff for element in diff]
@@ -42,13 +43,20 @@ def build():
     print(y_test[:20])
 
 def predict(X):
+    loadInput()
     if type(X[0])!=list:
         X=[X]
     model=model_from_json(open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','model_score_difference_model.pickle')).read())
     model.load_weights(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'pickle_files','model_score_difference_weights.h5'))
     sgd = SGD(lr=0.1)
     model.compile(loss='sparse_categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    return model.predict(numpy.asarray(X)).tolist()
+    result=model.predict(numpy.asarray(X)).tolist()[0]
+    result_dict={}
+    for i in range(len(result)):
+        result_dict[i+min_diff]=result[i]
+    sorted_result_dict=sorted(result_dict,key=result_dict.get,reverse=True)
+    result=[[sorted_result_dict[i],result_dict[sorted_result_dict[i]]] for i in range(10)]
+    return result
 
 if __name__=='__main__':
     build()

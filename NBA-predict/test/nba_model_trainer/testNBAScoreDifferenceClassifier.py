@@ -15,4 +15,5 @@ class TestNBAScoreDifferenceClassifier(unittest.TestCase):
                                        'vince_carter', 'james_ennis', 'russ_smith', 'brandan_wright']}
         match_vector=generateVectorForOneMatch(match=match)
         result=predict(match_vector)
+        print(result)
         self.assertIsNotNone(result)
