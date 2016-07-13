@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/recsyschallenge2016/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ICHI2016_Challenge/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/digit_recognition/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/multi-digit-recognition/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
