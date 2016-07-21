@@ -7,14 +7,13 @@ from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.cross_validation import StratifiedKFold,train_test_split
 from keras.optimizers import SGD
 import numpy
-train_data_dir=os.path.join(os.path.dirname(os.path.dirname(__file__)),'pickle_files','train_multi_digit_inp_outp1-10000.pickle')
-pickle_dir=os.path.join(os.path.dirname(os.path.dirname(__file__)),'pickle_files')
+train_data_dir=os.path.join('..','pickle_files','train_multi_digit_inp_outp.pickle')
+pickle_dir=os.path.join('..','pickle_files')
 max_digit_len=8
 
 def correctInputList(input_list):
     final_input_list=[]
     for i in range(len(input_list)):
-        print(i)
         final_input_list.append([[],[],[]])
         for j in range(len(input_list[0])):
             final_input_list[-1][0].append([])
@@ -33,7 +32,10 @@ def loadInputAndOutputFromPickle():
     return inp,outp
 
 def generateOutputForAllModels(outp):
-    output_for_all_models=[[]]*(max_digit_len+1)
+    output_for_all_models=[]
+    for i in range(max_digit_len+1):
+        output_for_all_models.append([])
+    print(output_for_all_models)
     for i in range(len(outp)):
         x=outp[i]
         y=[]
@@ -43,7 +45,7 @@ def generateOutputForAllModels(outp):
         output_for_all_models[0].append(len(y))
         for i in range(len(y)):
             output_for_all_models[i+1].append(y[i])
-        for i in range(len(y)+1,max_digit_len+2):
+        for i in range(len(y)+1,max_digit_len+1):
             output_for_all_models[i].append(10)
     return output_for_all_models
 
@@ -60,14 +62,14 @@ def create_baseline(number_of_classes):
     cnn_model.add(Dropout(0.25))
     cnn_model.add(Flatten())
     cnn_model.add(Dense(number_of_classes, activation='softmax'))
-    sgd = SGD(lr=0.0001)
+    sgd = SGD(lr=0.00001)
     cnn_model.compile(loss='sparse_categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     return cnn_model
 
 def buildAllModels():
     all_models=[]
     all_models.append(create_baseline(max_digit_len+1))
-    for i in range(10):
+    for i in range(max_digit_len):
         all_models.append(create_baseline(11))
     return all_models
 
@@ -82,13 +84,18 @@ def train():
     seed = 3
     numpy.random.seed(seed)
     inp,outp=loadInputAndOutputFromPickle()
-    outp_for_all_models=generateOutputForAllModels(outp)
+    print('Finished load input')
+    outp_for_all_models=generateOutputForAllModels(outp[:5000])
     inp=correctInputList(inp)
+    print(len(outp_for_all_models[0]))
+    print(len(inp))
+    print('Start Training')
     all_models=buildAllModels()
     for i in range(len(all_models)):
-        inp_train, inp_test, outp_train, outp_test = train_test_split(inp, outp_for_all_models[i], test_size=0.7,
+        inp_train, inp_test, outp_train, outp_test = train_test_split(inp, outp_for_all_models[i], test_size=0.3,
                                                                       random_state=seed)
         all_models[i].fit(inp_train,outp_train)
+        print('Finished Training Model'+str(i))
     outputModelToFile(all_models)
 
 if __name__=='__main__':
