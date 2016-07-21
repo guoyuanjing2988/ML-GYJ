@@ -3,7 +3,7 @@ import glob
 from PIL import Image
 import pickle
 
-picture_dir='C:\\Users\\I329397\\Desktop\\learn\\Multi-digit Classification'
+picture_dir='/Users/atm/Desktop/multidigit/'
 
 def correctInputList(input_list):
     final_input_list=[]
@@ -26,7 +26,7 @@ def preprocessPictures(picture_files,picture_size=100,picture_width=100):
     for picture_file in picture_files:
         print(picture_file)
         location1=picture_file.find('.')
-        location2=picture_file.find(chr(92),location1-6,location1)
+        location2=picture_file.find('/',location1-6,location1)
         id.append(int(picture_file[location2+1:location1]))
         try:
             picture = Image.open(picture_file).resize((picture_size, picture_width))
@@ -49,30 +49,30 @@ def _addInputAndOutput(dir_name):
     return inp,id
 
 def generateMultiDigitClassificationInputAndOutput():
-    '''outp_list=[]
-    inp,id=_addInputAndOutput('train')
+    outp_list=[]
+    inp,id=_addInputAndOutput('train/train')
     outp=[0]*len(inp)
-    f=open(os.path.join(picture_dir,'train','trainlabel.txt'))
+    f=open(os.path.join(picture_dir,'train/train','trainlabel.txt'))
     for line in f.readlines():
         outp_list.append(int(line))
     for i in range(len(inp)):
         outp[i]=outp_list[id[i]-1]
-    f=open(os.path.join(os.path.dirname(os.path.dirname(__file__)),'pickle_files','train_multi_digit_inp_outp.pickle'),'wb')
+    f=open(os.path.join('..','pickle_files','train_multi_digit_inp_outp.pickle'),'wb')
     pickle.dump(inp,f)
     pickle.dump(outp,f)
-    f.close()'''
+    f.close()
     outp_list = []
-    inp,id = _addInputAndOutput('test')
-    f = open(os.path.join(picture_dir, 'test', 'testlabel.txt'))
+    inp,id = _addInputAndOutput('test/test')
+    f = open(os.path.join(picture_dir, 'test/test', 'testlabel.txt'))
     outp = [0] * len(inp)
     for line in f.readlines():
         outp_list.append(int(line))
     for i in range(len(inp)):
         outp[i] = outp_list[id[i] - 1]
-    f = open(os.path.join(os.path.dirname(os.path.dirname(__file__)),'pickle_files','test_multi_digit_inp_outp.pickle'), 'wb')
+    f = open(os.path.join('..','pickle_files','test_multi_digit_inp_outp.pickle'), 'wb')
     pickle.dump(inp, f)
     pickle.dump(outp, f)
     f.close()
 
-
+print(os.path.join('..','pickle_files'))
 generateMultiDigitClassificationInputAndOutput()
